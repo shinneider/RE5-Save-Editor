@@ -1,0 +1,27 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+body {
+  /* height: 100vh; */
+  /* background: linear-gradient(
+    200.96deg,
+    #fedc2a -29.09%,
+    #dd5789 51.77%,
+    #7a2c9e 129.35%
+  ); */
+  background-image: url('../../assets/re5-wallpaper.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* background-size: cover; */
+  background-size: 100% 100%;
+}
+
+.content-container {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(2px);
+  padding: 10px;
+  border-radius: 10px;
+  /* min-width: 75%; */
+  max-width: 75vw !important;
+}
