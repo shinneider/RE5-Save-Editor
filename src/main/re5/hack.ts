@@ -55,83 +55,83 @@ export class RE5SaveBase {
 }
 
 export class Re5SteamSaveEditor {
-    savePath: fs.PathOrFileDescriptor = ""
-    saveBuffer: Buffer = Buffer.from([])
+  savePath: fs.PathOrFileDescriptor = ""
+  saveBuffer: Buffer = Buffer.from([])
 
-    open = (dir: fs.PathOrFileDescriptor) => {
-      this.savePath = dir
-      this.saveBuffer = RE5SaveBase.decodeSaveData(RE5SaveBase.readFile(dir))
-    }
-    save(dir: fs.PathOrFileDescriptor) {
-        this.setSaveFileChecksum(RE5SaveBase.calculateChecksum(this.saveBuffer))
-        const encodedData = RE5SaveBase.encodeSaveData(this.saveBuffer)
-        RE5SaveBase.writeFile(dir, encodedData)
-    }
+  open = (dir: fs.PathOrFileDescriptor) => {
+    this.savePath = dir
+    this.saveBuffer = RE5SaveBase.decodeSaveData(RE5SaveBase.readFile(dir))
+  }
+  save(dir: fs.PathOrFileDescriptor) {
+      this.setSaveFileChecksum(RE5SaveBase.calculateChecksum(this.saveBuffer))
+      const encodedData = RE5SaveBase.encodeSaveData(this.saveBuffer)
+      RE5SaveBase.writeFile(dir, encodedData)
+  }
 
-    getUInt64 = (offset: number) => this.saveBuffer.readBigUInt64LE(offset)
-    setUInt64 = (offset: number, value: bigint) => this.saveBuffer.writeBigInt64LE(value, offset)
-    getUInt32 = (offset: number) => this.saveBuffer.readUInt32LE(offset)
-    setUInt32 = (offset: number, value: number) => this.saveBuffer.writeUInt32LE(value, offset)
+  getUInt64 = (offset: number) => this.saveBuffer.readBigUInt64LE(offset)
+  setUInt64 = (offset: number, value: bigint) => this.saveBuffer.writeBigInt64LE(value, offset)
+  getUInt32 = (offset: number) => this.saveBuffer.readUInt32LE(offset)
+  setUInt32 = (offset: number, value: number) => this.saveBuffer.writeUInt32LE(value, offset)
 
-    getSteamId = () => this.saveBuffer.readBigInt64LE(0x0)
-    setSteamId = (steamId: bigint) => this.saveBuffer.writeBigInt64LE(steamId, 0x0)
+  getSteamId = () => this.saveBuffer.readBigInt64LE(0x0)
+  setSteamId = (steamId: bigint) => this.saveBuffer.writeBigInt64LE(steamId, 0x0)
 
-    getSaveFileChecksum = () => this.getUInt32(0x8)
-    setSaveFileChecksum = (checksum: number) => this.setUInt32(0x8, checksum)
-    getRealChecksum = () => RE5SaveBase.calculateChecksum(this.saveBuffer)
+  getSaveFileChecksum = () => this.getUInt32(0x8)
+  setSaveFileChecksum = (checksum: number) => this.setUInt32(0x8, checksum)
+  getRealChecksum = () => RE5SaveBase.calculateChecksum(this.saveBuffer)
 
-    getSaveDate() {
-      const date = `${this.getUInt32(0x10)}-${this.getUInt32(0x14)}-${this.getUInt32(0x18)}`
-      const hours = `${this.getUInt32(0x1c)}:${this.getUInt32(0x20)}:${this.getUInt32(0x24)}`
-      return new Date(`${date}T${hours}`)
-    }
+  getSaveDate() {
+    const date = `${this.getUInt32(0x10)}-${this.getUInt32(0x14)}-${this.getUInt32(0x18)}`
+    const hours = `${this.getUInt32(0x1c)}:${this.getUInt32(0x20)}:${this.getUInt32(0x24)}`
+    return new Date(`${date}T${hours}`)
+  }
 
-    setSaveDate(date: Date) {
-      this.setUInt32(0x10, date.getFullYear()) &&  this.setUInt32(0x14, date.getMonth()) &&  this.setUInt32(0x18, date.getDate())
-      this.setUInt32(0x1c, date.getHours()) &&  this.setUInt32(0x20, date.getMinutes()) &&  this.setUInt32(0x24, date.getSeconds())
-    }
+  setSaveDate(date: Date) {
+    this.setUInt32(0x10, date.getFullYear()) &&  this.setUInt32(0x14, date.getMonth()) &&  this.setUInt32(0x18, date.getDate())
+    this.setUInt32(0x1c, date.getHours()) &&  this.setUInt32(0x20, date.getMinutes()) &&  this.setUInt32(0x24, date.getSeconds())
+  }
 
-    getMoney = () => this.getUInt32(0x194)
-    setMoney = (money: number) => this.setUInt32(0x194, money)
+  getMoney = () => this.getUInt32(0x194)
+  setMoney = (money: number) => this.setUInt32(0x194, money)
 
-    getPoints = () => this.getUInt32(0x198)
-    setPoints = (money: number) => this.setUInt32(0x198, money)
+  getPoints = () => this.getUInt32(0x198)
+  setPoints = (money: number) => this.setUInt32(0x198, money)
 
-    getChoicesHelper = (choices: Array<string>, value: number | bigint) => {
-      const binary = value.toString(2);
-      return choices.filter((_, index) => binary[index] == '1')
-    }
+  getChoicesHelper = (choices: Array<string>, value: number | bigint) => {
+    const binary = value.toString(2);
+    return choices.filter((_, index) => binary[index] == '1')
+  }
 
-    setChoicesHelper = (choices: Array<string>, value: Array<string>) => {
-      const reducFunc = (prev: string, curr: string) => {
-        const indexPos = choices.indexOf(curr)
-        return indexPos !== -1 ? prev.substring(0, indexPos) + '1' + prev.substring(indexPos + 1) : prev
-      }
+  setChoicesHelper = (choices: Array<string>, value: Array<string>) => {
+    const reducFunc = (prev: string, curr: string) => {
+      const indexPos = choices.indexOf(curr)
+      return indexPos !== -1 ? prev.substring(0, indexPos) + '1' + prev.substring(indexPos + 1) : prev
+    };
 
-      return value.reduce(reducFunc, '0'.padStart(choices.length, '0'))
-    }
+    return value.reduce(reducFunc, '0'.padStart(choices.length, '0'))
+  };
 
-    getChrisCostumesChoices = () => ['warrior', 'stars', 'safari', 'bsaa']
-    getChrisCostumes = () => this.getChoicesHelper(this.getChrisCostumesChoices(), this.getUInt32(0x124))
-    setChrisCostumes = (value: Array<string>) => this.setUInt32(0x124, parseInt(this.setChoicesHelper(this.getChrisCostumesChoices(), value), 2))
+  getChrisCostumesChoices = () => ['warrior', 'stars', 'safari', 'bsaa']
+  getChrisCostumes = () => this.getChoicesHelper(this.getChrisCostumesChoices(), this.getUInt32(0x124))
+  setChrisCostumes = (value: Array<string>) => this.setUInt32(0x124, parseInt(this.setChoicesHelper(this.getChrisCostumesChoices(), value), 2))
 
-    getShevaCostumesChoices = () => ['business', 'tribal', 'clubbin', 'bsaa']
-    getShevaCostumes = () => this.getChoicesHelper(this.getShevaCostumesChoices(), this.getUInt32(0x128))
-    setShevaCostumes = (value: Array<string>) => this.setUInt32(0x128, parseInt(this.setChoicesHelper(this.getShevaCostumesChoices(), value), 2))
+  getShevaCostumesChoices = () => ['business', 'tribal', 'clubbin', 'bsaa']
+  getShevaCostumes = () => this.getChoicesHelper(this.getShevaCostumesChoices(), this.getUInt32(0x128))
+  setShevaCostumes = (value: Array<string>) => this.setUInt32(0x128, parseInt(this.setChoicesHelper(this.getShevaCostumesChoices(), value), 2))
 
-    getScreenFiltersChoices = () => ['noise', 'retro', 'classic', 'default']
-    getScreenFilters = () => this.getChoicesHelper(this.getScreenFiltersChoices(), this.getUInt32(0x12c))
-    setScreenFilters = (value: Array<string>) => this.setUInt32(0x12c, parseInt(this.setChoicesHelper(this.getScreenFiltersChoices(), value), 2))
+  getScreenFiltersChoices = () => ['noise', 'retro', 'classic', 'default']
+  getScreenFilters = () => this.getChoicesHelper(this.getScreenFiltersChoices(), this.getUInt32(0x12c))
+  setScreenFilters = (value: Array<string>) => this.setUInt32(0x12c, parseInt(this.setChoicesHelper(this.getScreenFiltersChoices(), value), 2))
 
-    getInfAmmoWeaponsChoices = () => allGameGuns
-    getInfAmmoWeapons = () => this.getChoicesHelper(allGameGuns, this.getUInt32(0x130))
-    setInfAmmoWeapons = (value: Array<string>) => this.setUInt32(0x130, parseInt(this.setChoicesHelper(allGameGuns, value), 2))
+  getInfAmmoWeaponsChoices = () => allGameGuns
+  getInfAmmoWeapons = () => this.getChoicesHelper(allGameGuns, this.getUInt32(0x130))
+  setInfAmmoWeapons = (value: Array<string>) => this.setUInt32(0x130, parseInt(this.setChoicesHelper(allGameGuns, value), 2))
 
-    getGameFilesChoices = () => allGameFiles
-    getGameFiles = () => this.getChoicesHelper(this.getGameFilesChoices(), this.getUInt32(0x134))
-    setGameFiles = (value: Array<string>) => this.setUInt32(0x134, parseInt(this.setChoicesHelper(allGameFiles, value), 2))
+  getGameFilesChoices = () => allGameFiles
+  getGameFiles = () => this.getChoicesHelper(this.getGameFilesChoices(), this.getUInt32(0x134))
+  setGameFiles = (value: Array<string>) => this.setUInt32(0x134, parseInt(this.setChoicesHelper(allGameFiles, value), 2))
 
-    getGameFiguresChoices = () => allGameFigures
-    getGameFigures = () => this.getChoicesHelper(allGameFigures, this.getUInt64(0x138))
-    setGameFigures = (value: Array<string>) => this.setUInt64(0x138, BigInt('0b' + this.setChoicesHelper(allGameFigures, value)))
+  getGameFiguresChoices = () => allGameFigures
+  getGameFigures = () => this.getChoicesHelper(allGameFigures, this.getUInt64(0x138))
+  setGameFigures = (value: Array<string>) => this.setUInt64(0x138, BigInt('0b' + this.setChoicesHelper(allGameFigures, value)))
 }
