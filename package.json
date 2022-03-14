@@ -1,6 +1,6 @@
 {
-  "name": "re3-hack",
-  "description": "A Simple Hack for Resident Evil 3",
+  "name": "re5-save-editor",
+  "description": "Simple Resident Evil 5 Save Editor (Made with Electron)",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
@@ -30,8 +30,8 @@
     ]
   },
   "build": {
-    "productName": "RE3 Hack",
-    "appId": "org.erb.Re3Hack",
+    "productName": "RE5 Save Editor",
+    "appId": "org.erb.Re5SaveEditor",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -71,13 +71,14 @@
   "license": "MIT",
   "keywords": [
     "electron",
-    "re3",
-    "resident evil 3",
+    "re5",
+    "resident evil 5",
+    "Save Editor",
     "typescript",
     "ts",
     "webpack"
   ],
-  "homepage": "https://github.com/shinneider/re3-hack#readme",
+  "homepage": "https://github.com/shinneider/RE5-Save-Editor#readme",
   "jest": {
     "testURL": "http://localhost/",
     "testEnvironment": "jsdom",

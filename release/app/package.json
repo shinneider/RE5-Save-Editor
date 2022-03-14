@@ -1,5 +1,5 @@
 {
-  "name": "re3-hack",
+  "name": "re5-save-editor",
   "version": "0.1.0",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "main": "./dist/main/main.js",
