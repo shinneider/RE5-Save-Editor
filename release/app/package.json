@@ -1,6 +1,6 @@
 {
   "name": "re5-save-editor",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "main": "./dist/main/main.js",
    "scripts": {
@@ -8,5 +8,10 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
     "postinstall": "npm run electron-rebuild && npm run link-modules"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/shinneider/RE5-Save-Editor"
+  },
+  "author": "Shinneider L. Silva"
 }
