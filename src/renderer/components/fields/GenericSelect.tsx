@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { GenericSelectProps } from './props'
 import { Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material';
+import './GenericSelect.css';
 
 const MenuProps = {
   PaperProps: {
     style: {
+      maxHeight: 100 * 4.5 + 8,
       width: 250,
     },
   },
@@ -34,6 +36,7 @@ export default function GenericSelect(props: GenericSelectProps) {
     <FormControl size="small" fullWidth>
       <InputLabel id="demo-multiple-checkbox-label">{props.title}</InputLabel>
       <Select
+        labelId="demo-multiple-checkbox-label"
         multiple
         autoWidth
         value={retryValue}

@@ -1,0 +1,5 @@
+.MuiSelect-select {
+  max-width: 50vw;
+  white-space: nowrap;
+  text-overflow: ellipsis !important;
+}

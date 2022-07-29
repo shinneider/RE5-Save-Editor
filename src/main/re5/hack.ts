@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import { Buffer } from 'buffer';
 import { allGameGuns, allGameFiles, allGameFigures } from './constants';
+import { getWeaponsFromBuffer } from './weaponsUtils'
+
 
 export class RE5SaveBase {
   static  magic: Buffer = Buffer.from([0x00, 0x21, 0x11, 0x08, 0xc0, 0x4b, 0x00, 0x00]);
@@ -68,6 +70,8 @@ export class Re5SteamSaveEditor {
       RE5SaveBase.writeFile(dir, encodedData)
   }
 
+  getUInt = (offset: number, byteLength: number) => this.saveBuffer.slice(offset, offset+byteLength)
+  getUInt8 = (offset: number) => this.saveBuffer.readUInt8(offset)
   getUInt64 = (offset: number) => this.saveBuffer.readBigUInt64LE(offset)
   setUInt64 = (offset: number, value: bigint) => this.saveBuffer.writeBigInt64LE(value, offset)
   getUInt32 = (offset: number) => this.saveBuffer.readUInt32LE(offset)
@@ -92,10 +96,10 @@ export class Re5SteamSaveEditor {
   }
 
   getMoney = () => this.getUInt32(0x194)
-  setMoney = (money: number) => this.setUInt32(0x194, money)
+  setMoney = (value: number) => this.setUInt32(0x194, value)
 
   getPoints = () => this.getUInt32(0x198)
-  setPoints = (money: number) => this.setUInt32(0x198, money)
+  setPoints = (value: number) => this.setUInt32(0x198, value)
 
   getChoicesHelper = (choices: Array<string>, value: number | bigint) => {
     const binary = value.toString(2);
@@ -134,4 +138,31 @@ export class Re5SteamSaveEditor {
   getGameFiguresChoices = () => allGameFigures
   getGameFigures = () => this.getChoicesHelper(allGameFigures, this.getUInt64(0x138))
   setGameFigures = (value: Array<string>) => this.setUInt64(0x138, BigInt('0b' + this.setChoicesHelper(allGameFigures, value)))
+
+  // //////
+  // // Game Stats
+  // ////
+
+  getPlayTime = () => this.getUInt32(0x18c)
+  setPlayTime = (value: number) => this.setUInt32(0x18c, value)
+
+  getRescueTimes = () => this.getUInt32(0x1d4)
+  setRescueTimes = (value: number) => this.setUInt32(0x1d4, value)
+
+  getRescuedTimes = () => this.getUInt32(0x1d8)
+  setRescuedTimes = (value: number) => this.setUInt32(0x1d8, value)
+
+  getSaveFromDying = () => this.getUInt32(0x1e4)
+  setSaveFromDying = (value: number) => this.setUInt32(0x1e4, value)
+
+  getSavedFromDying = () => this.getUInt32(0x1e8)
+  setSavedFromDying = (value: number) => this.setUInt32(0x1e8, value)
+
+  // //////
+  // // Weapon Stats
+  // ////
+
+  getWeaponsAvailable = () => this.getUInt8(0x148)
+  getWeaponsStats = (weaponNumber: number) => getWeaponsFromBuffer(this.getUInt(0x1f8 + (weaponNumber*40), 40))
+
 }

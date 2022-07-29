@@ -1,0 +1,7 @@
+{
+  "tabWidth": 2,
+  "useTabs": true,
+  "endOfLine": "lf",
+  "trailingComma": "es5",
+  "bracketSameLine": true
+}

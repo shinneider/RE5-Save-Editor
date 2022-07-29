@@ -108,6 +108,16 @@ const createWindow = async () => {
     shell.openExternal(url);
   });
 
+  autoUpdater.on('update-available', () => {
+    if (mainWindow !== null) mainWindow.webContents.send('update_available');
+  });
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow !== null) mainWindow.webContents.send('update_downloaded');
+  });
+  ipcMain.on('restart_app', () => {
+    autoUpdater.quitAndInstall();
+  });
+
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
